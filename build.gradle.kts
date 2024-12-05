@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
-    id("org.springframework.boot") version "3.4.0"
+    id("org.springframework.boot") version "3.3.5"
     id("io.spring.dependency-management") version "1.1.6"
 }
 
@@ -41,7 +41,6 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-orgjson:0.11.5")
 
     // Lombok (För att minska boilerplate-kod)
-    compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
     // Development Only (För devtools)

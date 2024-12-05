@@ -1,6 +1,7 @@
 package hampusborg.projectmanagerbackend.controller
 
 import hampusborg.projectmanagerbackend.dto.*
+import hampusborg.projectmanagerbackend.exception.TaskNotFoundException
 import hampusborg.projectmanagerbackend.service.TaskService
 import hampusborg.projectmanagerbackend.repository.TaskRepository
 import jakarta.validation.Valid
@@ -27,17 +28,16 @@ class TaskController(
     @GetMapping("/{taskId}")
     fun getTaskById(@PathVariable projectId: String, @PathVariable taskId: String): ResponseEntity<TaskDto> {
         val task = taskRepository.findByProjectIdAndId(projectId, taskId)
-        return if (task != null) {
-            val taskDto = TaskDto(
-                id = task.id,
-                title = task.title,
-                description = task.description,
-                status = task.status
-            )
-            ResponseEntity.ok(taskDto)
-        } else {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
-        }
+            ?: throw TaskNotFoundException("Task not found for projectId $projectId and taskId $taskId")
+
+        val taskDto = TaskDto(
+            id = task.id,
+            title = task.title,
+            description = task.description,
+            status = task.status
+        )
+
+        return ResponseEntity.ok(taskDto)
     }
 
     @GetMapping
