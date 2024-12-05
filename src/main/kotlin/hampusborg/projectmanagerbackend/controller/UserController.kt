@@ -2,6 +2,10 @@ package hampusborg.projectmanagerbackend.controller
 
 import hampusborg.projectmanagerbackend.dto.*
 import hampusborg.projectmanagerbackend.model.User
+import hampusborg.projectmanagerbackend.request.LoginRequest
+import hampusborg.projectmanagerbackend.request.PasswordUpdateRequest
+import hampusborg.projectmanagerbackend.request.UserRequest
+import hampusborg.projectmanagerbackend.response.JwtResponse
 import hampusborg.projectmanagerbackend.service.UserService
 import hampusborg.projectmanagerbackend.util.JwtUtil
 import jakarta.validation.Valid

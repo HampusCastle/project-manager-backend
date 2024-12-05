@@ -1,4 +1,4 @@
-package hampusborg.projectmanagerbackend.dto
+package hampusborg.projectmanagerbackend.response
 
 import jakarta.validation.constraints.NotEmpty
 

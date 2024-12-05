@@ -1,8 +1,8 @@
 package hampusborg.projectmanagerbackend.service
 
-import hampusborg.projectmanagerbackend.dto.LoginRequest
+import hampusborg.projectmanagerbackend.request.LoginRequest
 import hampusborg.projectmanagerbackend.dto.UserDto
-import hampusborg.projectmanagerbackend.dto.UserRequest
+import hampusborg.projectmanagerbackend.request.UserRequest
 import hampusborg.projectmanagerbackend.model.User
 import hampusborg.projectmanagerbackend.repository.UserRepository
 import hampusborg.projectmanagerbackend.util.JwtUtil
