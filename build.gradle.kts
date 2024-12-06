@@ -35,6 +35,9 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin") // För JSON-serialisering med Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect") // För Kotlin reflection
 
+    // ENV
+    implementation ("io.github.cdimascio:dotenv-kotlin:6.2.2")
+
     // JWT och Security
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
@@ -45,6 +48,10 @@ dependencies {
 
     // Development Only (För devtools)
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+    //H2 databas för tester (NO-Sql)
+    testImplementation("org.testcontainers:testcontainers:1.18.3")
+    testImplementation("org.testcontainers:mongodb:1.18.3")
 
     // Test dependencies
     testImplementation("org.springframework.boot:spring-boot-starter-test")  // Grundläggande test beroende för Spring Boot

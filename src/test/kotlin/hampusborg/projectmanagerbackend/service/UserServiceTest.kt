@@ -1,5 +1,6 @@
 package hampusborg.projectmanagerbackend.service
 
+import hampusborg.projectmanagerbackend.config.MongoTestConfig
 import hampusborg.projectmanagerbackend.request.LoginRequest
 import hampusborg.projectmanagerbackend.request.UserRequest
 import hampusborg.projectmanagerbackend.model.User
@@ -16,12 +17,18 @@ import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.context.annotation.Import
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.TestPropertySource
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 @SpringBootTest
+@ActiveProfiles("test")
+@Import(MongoTestConfig::class)
+@TestPropertySource(properties = ["JWT_SECRET=mock-secret-for-tests"])
 class UserServiceTest @Autowired constructor(
     private val userService: UserService,
     @MockBean private val userRepository: UserRepository,

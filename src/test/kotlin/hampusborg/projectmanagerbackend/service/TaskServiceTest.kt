@@ -1,5 +1,6 @@
 package hampusborg.projectmanagerbackend.service
 
+import hampusborg.projectmanagerbackend.config.MongoTestConfig
 import hampusborg.projectmanagerbackend.dto.TaskDto
 import hampusborg.projectmanagerbackend.exception.TaskNotFoundException
 import hampusborg.projectmanagerbackend.model.Task
@@ -9,14 +10,18 @@ import org.mockito.Mockito
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.context.annotation.Import
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.TestPropertySource
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@ActiveProfiles("test")
+@Import(MongoTestConfig::class)
+@TestPropertySource(properties = ["JWT_SECRET=mock-secret-for-tests"])
 class TaskServiceTest @Autowired constructor(
     private val taskService: TaskService,
     @MockBean private val taskRepository: TaskRepository

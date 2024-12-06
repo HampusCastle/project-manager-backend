@@ -1,23 +1,29 @@
 package hampusborg.projectmanagerbackend.assertions
 
+import hampusborg.projectmanagerbackend.config.MongoTestConfig
 import hampusborg.projectmanagerbackend.request.LoginRequest
 import hampusborg.projectmanagerbackend.request.UserRequest
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
+import org.mockito.kotlin.any
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.data.mongodb.core.MongoTemplate
 import hampusborg.projectmanagerbackend.service.UserService
 import hampusborg.projectmanagerbackend.model.User
 import hampusborg.projectmanagerbackend.model.Role
 import hampusborg.projectmanagerbackend.repository.UserRepository
 import hampusborg.projectmanagerbackend.util.JwtUtil
-import org.mockito.Mockito
-import org.mockito.kotlin.any
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.junit.jupiter.api.Assertions.*
+import org.springframework.context.annotation.Import
 
 @SpringBootTest
+@ActiveProfiles("test")
+@Import(MongoTestConfig::class)
 class AssertionsTest {
 
     @MockBean
@@ -28,6 +34,9 @@ class AssertionsTest {
 
     @Autowired
     lateinit var userService: UserService
+
+    @Autowired
+    lateinit var mongoTemplate: MongoTemplate
 
     private val regularUser = User(
         username = "testuser",
@@ -47,6 +56,8 @@ class AssertionsTest {
             .thenReturn(regularUser.copy(password = encodedPassword))
         Mockito.`when`(jwtUtil.generateToken(any(), any()))
             .thenReturn("mock-jwt-token")
+
+        mongoTemplate.save(regularUser)
     }
 
     @Test
@@ -54,9 +65,7 @@ class AssertionsTest {
         val user = userService.getUserProfile("testuser")
         assertNotNull(user)
         assertEquals("testuser", user.username)
-
         assertEquals(Role.ROLE_USER, user.role)
-
         assertEquals("testuser@example.com", user.email)
 
         val token = jwtUtil.generateToken(user.username, user.role.name)
@@ -67,6 +76,7 @@ class AssertionsTest {
         assertTrue(passwordEncoder.matches("password123", user.password))
 
         user.email = "newemail@example.com"
+        mongoTemplate.save(user)
         val updatedUser = userService.getUserProfile("testuser")
         assertEquals("newemail@example.com", updatedUser.email)
 
@@ -79,12 +89,12 @@ class AssertionsTest {
         assertTrue(loginToken.startsWith("mock"))
 
         val updatedPassword = "newpassword123"
-        val userToUpdate = userService.getUserProfile("testuser")  // Fetch the user first
-        userService.updatePassword(userToUpdate, updatedPassword)  // Send the user with the new password
+        val userToUpdate = userService.getUserProfile("testuser")
+        userService.updatePassword(userToUpdate, updatedPassword)
 
         val updatedUserProfile = userService.getUserProfile("testuser")
         val newPasswordEncoder = BCryptPasswordEncoder()
-        assertTrue(newPasswordEncoder.matches(updatedPassword, updatedUserProfile.password))  // Verify password change
+        assertTrue(newPasswordEncoder.matches(updatedPassword, updatedUserProfile.password))
 
         val newLoginRequest = LoginRequest(username = "testuser", password = "newpassword123")
         val newLoginToken = userService.loginUser(newLoginRequest)

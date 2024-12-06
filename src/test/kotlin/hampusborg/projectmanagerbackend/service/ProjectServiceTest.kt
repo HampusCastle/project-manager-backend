@@ -1,5 +1,6 @@
 package hampusborg.projectmanagerbackend.service
 
+import hampusborg.projectmanagerbackend.config.MongoTestConfig
 import hampusborg.projectmanagerbackend.model.Project
 import hampusborg.projectmanagerbackend.dto.ProjectDto
 import hampusborg.projectmanagerbackend.repository.ProjectRepository
@@ -10,10 +11,16 @@ import org.mockito.kotlin.eq
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.context.annotation.Import
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.TestPropertySource
 import java.util.*
 import kotlin.test.assertEquals
 
 @SpringBootTest
+@ActiveProfiles("test")
+@Import(MongoTestConfig::class)
+@TestPropertySource(properties = ["JWT_SECRET=mock-secret-for-tests"])
 class ProjectServiceTest @Autowired constructor(
     private val projectService: ProjectService,
     @MockBean private val projectRepository: ProjectRepository

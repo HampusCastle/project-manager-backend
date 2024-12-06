@@ -17,10 +17,17 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.boot.test.mock.mockito.MockBean
 import com.jayway.jsonpath.JsonPath
+import hampusborg.projectmanagerbackend.config.MongoTestConfig
 import org.mockito.Mockito.`when`
+import org.springframework.context.annotation.Import
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.TestPropertySource
 
 @SpringBootTest(classes = [ProjectManagerBackendApplication::class])
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
+@Import(MongoTestConfig::class)
+@TestPropertySource(properties = ["JWT_SECRET=mock-secret-for-tests"])
 class SecurityConfigTest(@Autowired val mockMvc: MockMvc) {
 
     @MockBean

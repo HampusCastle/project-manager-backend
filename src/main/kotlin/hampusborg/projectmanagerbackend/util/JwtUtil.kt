@@ -3,6 +3,7 @@ package hampusborg.projectmanagerbackend.util
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import io.jsonwebtoken.SignatureAlgorithm
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.security.Key
 import java.util.*
@@ -10,8 +11,16 @@ import java.util.*
 @Component
 class JwtUtil {
 
-    private val secretKey: Key = Keys.hmacShaKeyFor("mysecretkeymysecretkeymysecretkeymysecretkey".toByteArray())
+    @Value("\${spring.security.jwt.secret}")
+    private lateinit var jwtSecret: String
 
+    private val secretKey: Key by lazy {
+        if (jwtSecret.length >= 32) {
+            Keys.hmacShaKeyFor(jwtSecret.toByteArray())
+        } else {
+            Keys.secretKeyFor(SignatureAlgorithm.HS256)
+        }
+    }
     fun generateToken(username: String, role: String): String {
         return Jwts.builder()
             .setSubject(username)
